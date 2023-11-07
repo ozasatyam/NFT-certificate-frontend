@@ -11,22 +11,18 @@ const Header = () => {
     .catch(error => console.error(error));
   }
     return (
-      <div className="navbar bg-primary text-primary-content w-full justify-between">
-        <div className=''>
-          <Link to='/' className="btn btn-ghost normal-case text-xl">Awesome Auth</Link>
-          <Link className="btn btn-ghost normal-case text-xl" to='/'>Home</Link>
-          <Link className="btn btn-ghost normal-case text-xl" to='/orders'>Orders</Link>
-        </div>
+      <div className="navbar bg-primary text-primary-content">
+        <Link to='/' className="btn btn-ghost normal-case text-xl">Awesome Auth</Link>
+        <Link className="btn btn-ghost normal-case text-xl" to='/'>Home</Link>
+        <Link className="btn btn-ghost normal-case text-xl" to='/orders'>Orders</Link>
         {/* <Link className="btn btn-ghost normal-case text-xl" to='login'>Login</Link> */}
-        <div className=''>
-          <Link to='register'><button className={`${!user ? 'btn btn-sm m-3' : 'hidden'}`}>Register</button></Link>
-          {user?.email && <span className='pr-5'>Welcome, {user.email}</span>}
-        {
-          user?.email ?  <button onClick={handleSignOut} className={`btn btn-sm`}>Log Out</button> : <Link to='/login'>
-            <button className="btn btn-sm">Login</button>
-          </Link>
-        }
-        </div>
+        <Link to='register'><button className="btn btn-sm m-3">Register</button></Link>
+        {user?.email && <span>Welcome, {user.email}</span>}
+       {
+        user?.email ?  <button onClick={handleSignOut} className="btn btn-sm">Log Out</button> : <Link to='/login'>
+          <button className="btn btn-sm">Login</button>
+        </Link>
+       }
       </div>
     );
 };

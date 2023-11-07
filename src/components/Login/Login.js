@@ -1,25 +1,18 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { signInAnonymously } from 'firebase/auth';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/UserContext';
 
 const Login = () => {
     const {signIn} = useContext(AuthContext);
-    const navigate = useNavigate()
-    const [showAlert, setShowAlert] = useState(false);
-
-    useEffect(() => {
-      if(showAlert) {
-        setTimeout(() => {
-          setShowAlert(false);
-        }, 2000)
-      }
-    }, [showAlert])
+    const navigate = useNavigate
 
     const handleSubmit = event =>{
         event.preventDefault();
         const form = event.target;
         const email = form.email.value;
         const password = form.password.value;
+        console.log(email, password);
 
         signIn(email, password)
         .then(result =>{
@@ -29,12 +22,10 @@ const Login = () => {
           navigate('/');
         })
         .catch(error => {
-          // console.error(error);
-          setShowAlert(true);
+          console.error(error);
         })
     }
     return (
-      <div className=''>
         <div>
             <div className="hero min-h-screen bg-base-200">
   <div className="hero-content flex-col lg:flex-col">
@@ -56,7 +47,7 @@ const Login = () => {
           </label>
           <input type="password" name='password' placeholder="Password" className="input input-bordered" required/>
           <label className="label">
-            <a href preventDefault className="label-text-alt link link-hover">Forgot password?</a>
+            <a href="#" className="label-text-alt link link-hover">Forgot password?</a>
           </label>
         </div>
         <div className="form-control mt-6">
@@ -67,14 +58,6 @@ const Login = () => {
   </div>
 </div>
         </div>
-
-      <div className={`fixed top-5 right-5 ${!showAlert && 'hidden'}`}>
-      <div class="bg-orange-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
-      <p class="font-bold">Login Failed</p>
-      <p>Email or Password is incorrect </p>
-      </div>
-      </div>
-</div>
     );
 };
 

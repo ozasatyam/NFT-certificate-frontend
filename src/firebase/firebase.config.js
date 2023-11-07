@@ -5,12 +5,12 @@ import { initializeApp } from "firebase/app";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyA0uQKzsqv4dubvF2vTyU-I7KiD8FjecfM",
-  authDomain: "nft-certificate.firebaseapp.com",
-  projectId: "nft-certificate",
-  storageBucket: "nft-certificate.appspot.com",
-  messagingSenderId: "422665846246",
-  appId: "1:422665846246:web:4a44b2315f244e074f2a27"
+  apiKey: "AIzaSyDejC3bhIbogGY-PW_pZhr2ioHJXPpg-rM",
+  authDomain: "email-password-auth-ec4a9.firebaseapp.com",
+  projectId: "email-password-auth-ec4a9",
+  storageBucket: "email-password-auth-ec4a9.appspot.com",
+  messagingSenderId: "337096276160",
+  appId: "1:337096276160:web:6c49fe853247204f02d525"
 };
 
 // Initialize Firebase
