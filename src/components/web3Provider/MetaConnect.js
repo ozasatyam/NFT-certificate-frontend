@@ -3,7 +3,7 @@ import React, { useState } from "react";
 
 const MetaConnect = () => {
 	const [account, setAccount] = useState();
-	const { sdk, connected, connecting, provider, chainId } = useSDK();
+	const { sdk, connected, provider, chainId } = useSDK();
 
 	const connect = async () => {
 		try {
@@ -22,7 +22,7 @@ const MetaConnect = () => {
 			{connected && (
 				<div>
 					<>
-						{chainId && `Connected chain: ${chainId}`}
+						{chainId && `Connected chain: ${chainId} ${provider}`}
 						<p></p>
 						{account && `Connected account: ${account}`}
 					</>

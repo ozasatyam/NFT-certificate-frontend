@@ -1,18 +1,29 @@
 import { useSDK } from "@metamask/sdk-react";
-import React, { useState } from "react";
+import { ethers } from "ethers";
+import React, { useEffect, useState } from "react";
+import Certificate from "../abis/Certificate.json"
 
 const MetaConnect = () => {
-	const [account, setAccount] = useState();
 	const { sdk, connected, connecting, provider, chainId } = useSDK();
+	const [account, setAccount] = useState();
 
 	const connect = async () => {
 		try {
 			const accounts = await sdk?.connect();
 			setAccount(accounts?.[0]);
+			console.log("contract create")
+			const contract = new ethers.Contract("0x17acd5d58aa1c0a54a5ee9a70eb0362d92098667", Certificate.abi)
+			console.log(contract)
+
 		} catch (err) {
 			console.warn(`failed to connect..`, err);
 		}
 	};
+	useEffect(() => {
+		if (connected) {
+			connect();
+		}
+	}, [])
 
 	return (
 		<div className="App">
@@ -28,7 +39,7 @@ const MetaConnect = () => {
 				<div
 					onClick={connect}
 					className="flex justify-center items-center bg-blue-600 px-8 py-4 rounded-md btn border-none"
-					// onClick={}
+				// onClick={}
 				>
 					<span className="text-white">Connect Wallet</span>
 				</div>
