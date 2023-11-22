@@ -3,12 +3,12 @@ import { ethers, JsonRpcProvider } from "ethers";
 import React, { useEffect, useState } from "react";
 import Certificate from "../abis/Certificate.json";
 import Input from "../components/Input";
-
+import Modal from "../components/Modal/Modal";
 const MetaConnect = () => {
 	const { sdk, connected, connecting, provider, chainId } = useSDK();
 	const [account, setAccount] = useState();
 	const [contract, setContract] = useState();
-
+	const [isModelClosed, setIsModelClosed] = useState(false);
 	const [studentDetails, setStudentDetails] = useState([]);
 
 	const getStudentDetails = async () => {
@@ -23,7 +23,9 @@ const MetaConnect = () => {
 			console.log(error);
 		}
 	};
-
+	const handleModelClose = () => {
+		setIsModelClosed((t) => !t);
+	};
 	const callContract = async () => {
 		const provider = new JsonRpcProvider(process.env.REACT_APP_RPC_URL);
 		const signer = new ethers.Wallet(
@@ -35,11 +37,11 @@ const MetaConnect = () => {
 			Certificate.abi,
 			signer
 		);
-		
+
 		// console.log(await c.studentIndex(0))
 		// const uri = await c.tokenURI("15600")
 		// console.log(uri)
-		
+
 		setContract(c);
 	};
 
@@ -60,11 +62,11 @@ const MetaConnect = () => {
 
 	const mint = async () => {
 		try {
-		// await	contract.addStudentAddress(account, "2@gmail.com")
+			// await	contract.addStudentAddress(account, "2@gmail.com")
 			// console.log("mint function called");
-			contract.batchMint().catch(()=>{
-				alert("minted")
-			})
+			contract.batchMint().catch(() => {
+				alert("minted");
+			});
 		} catch (error) {
 			console.log(error);
 		}
@@ -99,13 +101,17 @@ const MetaConnect = () => {
 					</>
 				</div>
 			) : (
-				<div
-					onClick={connect}
-					className="flex justify-center items-center bg-blue-600 px-8 py-4 rounded-md btn border-none"
-					// onClick={}
-				>
-					<span className="text-white">Connect Wallet</span>
-				</div>
+				// <div
+				// 	onClick={connect}
+				// 	className="flex justify-center items-center bg-blue-600 px-8 py-4 rounded-md btn border-none"
+				// 	// onClick={}
+				// >
+				// 	<span className="text-white">Connect Wallet</span>
+				// </div>
+				<>
+					{!isModelClosed && <Modal handleModelClose={handleModelClose} />}
+					<Input />
+				</>
 			)}
 		</div>
 	);

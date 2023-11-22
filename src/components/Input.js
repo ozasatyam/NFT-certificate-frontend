@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 const Input = ({ account }) => {
 	return (
-		<div className="card flex-shrink-0 w-full max-w-sm bg-base-100">
+		<div className="card  flex-shrink-0 w-full max-w-sm bg-base-100">
 			<form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full">
 				<div className="form-control">
 					<label
@@ -14,7 +14,7 @@ const Input = ({ account }) => {
 						type="text"
 						name="address"
 						placeholder="Address"
-						className="input input-bordered"
+						className="input input-bordered z-0"
 						required
 						value={account && account}
 					/>
