@@ -13,9 +13,8 @@ const MetaConnect = () => {
 
 	const getStudentDetails = async () => {
 		try {
-			const result = await contract.studentInfo("satya@gmail.com");
+			const result = await contract.studentInfo("2@gmail.com");
 			if (result) {
-				console.log(result);
 				setStudentDetails(result);
 			} else {
 				setStudentDetails([]);
@@ -25,7 +24,7 @@ const MetaConnect = () => {
 		}
 	};
 
-	const callContract = () => {
+	const callContract = async () => {
 		const provider = new JsonRpcProvider(process.env.REACT_APP_RPC_URL);
 		const signer = new ethers.Wallet(
 			process.env.REACT_APP_PRIVATE_KEY,
@@ -36,6 +35,11 @@ const MetaConnect = () => {
 			Certificate.abi,
 			signer
 		);
+		
+		// console.log(await c.studentIndex(0))
+		// const uri = await c.tokenURI("15600")
+		// console.log(uri)
+		
 		setContract(c);
 	};
 
@@ -56,7 +60,11 @@ const MetaConnect = () => {
 
 	const mint = async () => {
 		try {
-			console.log("mint function called");
+		// await	contract.addStudentAddress(account, "2@gmail.com")
+			// console.log("mint function called");
+			contract.batchMint().catch(()=>{
+				alert("minted")
+			})
 		} catch (error) {
 			console.log(error);
 		}
