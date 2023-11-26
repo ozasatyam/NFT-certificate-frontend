@@ -15,7 +15,7 @@ const Header = () => {
 		setIsModelClosed((t) => !t);
 	};
 	return (
-		<div className="navbar bg-primary text-primary-content w-full justify-between">
+		<div className="navbar text-primary-content w-full justify-between bg-[#22333B]">
 			<div className="">
 				<Link to="/" className="btn btn-ghost normal-case text-xl">
 					Awesome Auth
