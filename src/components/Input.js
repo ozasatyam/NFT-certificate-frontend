@@ -1,11 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
-const Input = ({ contract, account, user }) => {
-	const [address, setAddress] = useState();
-
+const Input = ({
+	contract,
+	account,
+	user,
+	handleModelClose,
+	setAddress,
+	address,
+}) => {
 	const getStudentAddress = async () => {
 		const result = await contract.studentInfo(user?.email);
-		setAddress(result[4]);
+		if (address != "0x0000000000000000000000000000000000000000") {
+			console.log("first");
+			setAddress && setAddress(result[4]);
+			handleModelClose && handleModelClose();
+		}
 	};
 	useEffect(() => {
 		if (!account && contract) {
@@ -29,6 +38,7 @@ const Input = ({ contract, account, user }) => {
 						className="input input-bordered z-0"
 						required
 						value={account ? account : address ? address : ""}
+						onChange={(e) => setAddress(e.target.value)}
 					/>
 				</div>
 			</form>

@@ -15,6 +15,12 @@ const MetaConnect = () => {
 	const [contract, setContract] = useState();
 	const [isModelClosed, setIsModelClosed] = useState(false);
 	const [studentDetails, setStudentDetails] = useState([]);
+	const [address, setAddress] = useState();
+	const [isAdminLogin, setIsAdminLogin] = useState(false);
+	const handleInputchange = (value) => {
+		console.log(value);
+		setAddress(value);
+	};
 
 	const getStudentDetails = async () => {
 		try {
@@ -28,7 +34,10 @@ const MetaConnect = () => {
 			console.log(error);
 		}
 	};
-	const handleModelClose = () => {
+	const handleModelClose = (showModal) => {
+		// if (showModal) {
+		// 	setIsModelClosed(!showModal);
+		// }
 		setIsModelClosed((t) => !t);
 	};
 	const callContract = async () => {
@@ -48,6 +57,7 @@ const MetaConnect = () => {
 		// console.log(uri)
 
 		setContract(c);
+		// console.log(account);
 	};
 
 	const connect = async () => {
@@ -59,12 +69,27 @@ const MetaConnect = () => {
 			console.warn(`failed to connect..`, err);
 		}
 	};
+
+	const handleAdminCheck = async () => {
+		// console.log(account);
+		console.log(user);
+		const isAdmin = await contract.adminEmail();
+		console.log(isAdmin);
+		setIsAdminLogin(user?.email == isAdmin);
+	};
+
 	useEffect(() => {
 		if (connected) {
 			connect();
 		}
 		callContract();
 	}, []);
+
+	useEffect(() => {
+		if (contract) {
+			handleAdminCheck();
+		}
+	}, [contract]);
 
 	const mint = async () => {
 		try {
@@ -73,6 +98,16 @@ const MetaConnect = () => {
 			contract.batchMint().catch(() => {
 				alert("minted");
 			});
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const updateStudentAddress = async () => {
+		try {
+			console.log(await contract.adminAddress());
+			const result = await contract.addStudentAddress(address, user?.email);
+			console.log(result);
 		} catch (error) {
 			console.log(error);
 		}
@@ -95,7 +130,15 @@ const MetaConnect = () => {
 								);
 							})
 						) : (
-							<Input contract={contract} account={account} user={user} />
+							<Input
+								contract={contract}
+								account={account}
+								user={user}
+								setAddress={handleInputchange}
+								updateStudentAddress={updateStudentAddress}
+								handleModelClose={handleModelClose}
+								address={address}
+							/>
 						)}
 						<div
 							className="flex justify-center items-center bg-blue-600 px-8 py-4 rounded-md btn border-none mt-8"
@@ -111,11 +154,36 @@ const MetaConnect = () => {
 					{!isModelClosed && <Modal handleModelClose={handleModelClose} />}
 					{studentDetails.length <= 0 ? (
 						<>
-							<Input contract={contract} account={account} user={user} />
+							{!isAdminLogin && (
+								<Input
+									contract={contract}
+									account={account}
+									user={user}
+									setAddress={handleInputchange}
+									updateStudentAddress={updateStudentAddress}
+									handleModelClose={handleModelClose}
+									address={address}
+								/>
+							)}
+							{/* {!	address ? (
+								<div
+									className="flex justify-center items-center bg-blue-600 px-8 py-4 rounded-md btn border-none mt-8 z-50"
+									onClick={getStudentDetails}>
+									<span className="text-white">Get Student Details</span>
+								</div>
+							) : (
+								<div
+									className="flex justify-center items-center bg-blue-600 px-8 py-4 rounded-md btn border-none mt-8 z-50"
+									onClick={updateStudentAddress}>
+									<span className="text-white">Update Address</span>
+								</div>
+							)} */}
 							<div
 								className="flex justify-center items-center bg-blue-600 px-8 py-4 rounded-md btn border-none mt-8 z-50"
-								onClick={getStudentDetails}>
-								<span className="text-white">Get Student Details</span>
+								onClick={isAdminLogin ? mint : updateStudentAddress}>
+								<span className="text-white">
+									{isAdminLogin ? "Mint" : "Add Address"}
+								</span>
 							</div>
 						</>
 					) : (
