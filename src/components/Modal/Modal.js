@@ -92,7 +92,7 @@ const Modal = ({ handleModelClose }) => {
 				className="overflow-y-auto overflow-x-hidden flex z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
 				data-modal-toggle="default-modal">
 				<div className="relative p-4 w-full max-w-2xl max-h-full">
-					<div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+					<div className="relative bg-white rounded-lg shadow text-black dark:text-white dark:bg-gray-700">
 						<div className="flex items-center justify-center p-4 md:p-5 border-b rounded-t dark:border-gray-600">
 							<Stapper
 								activeTab={activeTab}

@@ -5,15 +5,21 @@ const Input = ({
 	account,
 	user,
 	handleModelClose,
+
+	setStaticAddress,
 	setAddress,
 	address,
 }) => {
 	const getStudentAddress = async () => {
 		const result = await contract.studentInfo(user?.email);
-		if (address != "0x0000000000000000000000000000000000000000") {
-			console.log("first");
+		console.log(!/^0x0+$/.test(address));
+		console.log("address");
+		console.log(result);
+		if (result[4] && !/^0x0+$/.test(result[4])) {
+			console.log("insde");
+			setStaticAddress(result[4]);
 			setAddress && setAddress(result[4]);
-			handleModelClose && handleModelClose();
+			handleModelClose(true);
 		}
 	};
 	useEffect(() => {
@@ -23,7 +29,7 @@ const Input = ({
 	}, [contract]);
 
 	return (
-		<div className="card  flex-shrink-0 w-full max-w-sm bg-base-100">
+		<div className="card  flex-shrink-0 w-full max-w-sm bg-[#22333B]">
 			<form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full">
 				<div className="form-control">
 					<label
@@ -35,7 +41,7 @@ const Input = ({
 						type="text"
 						name="address"
 						placeholder="Address"
-						className="input input-bordered z-0"
+						className="input input-bordered z-0 bg-[#22333B] text-white"
 						required
 						value={account ? account : address ? address : ""}
 						onChange={(e) => setAddress(e.target.value)}

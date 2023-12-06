@@ -16,11 +16,14 @@ const MetaConnect = () => {
 	const [isModelClosed, setIsModelClosed] = useState(false);
 	const [studentDetails, setStudentDetails] = useState([]);
 	const [address, setAddress] = useState();
+	const [walletAddress, setWalletAddress] = useState();
+	const [staticAddress, setStaticAddress] = useState("");
 	const [isAdminLogin, setIsAdminLogin] = useState(false);
 	const handleInputchange = (value) => {
-		console.log(value);
 		setAddress(value);
 	};
+
+	const emptyAddress = staticAddress && !/^0x0+$/.test(staticAddress);
 
 	const getStudentDetails = async () => {
 		try {
@@ -35,10 +38,11 @@ const MetaConnect = () => {
 		}
 	};
 	const handleModelClose = (showModal) => {
-		// if (showModal) {
-		// 	setIsModelClosed(!showModal);
-		// }
-		setIsModelClosed((t) => !t);
+		if (showModal !== undefined) {
+			setIsModelClosed(showModal);
+		} else {
+			setIsModelClosed((t) => !t);
+		}
 	};
 	const callContract = async () => {
 		const provider = new JsonRpcProvider(process.env.REACT_APP_RPC_URL);
@@ -63,7 +67,9 @@ const MetaConnect = () => {
 	const connect = async () => {
 		try {
 			const accounts = await sdk?.connect();
-			setAccount(accounts?.[0]);
+			// setAccount(accounts?.[0]);
+			setWalletAddress(accounts?.[0]);
+			// handleModelClose(false);
 			callContract();
 		} catch (err) {
 			console.warn(`failed to connect..`, err);
@@ -72,10 +78,13 @@ const MetaConnect = () => {
 
 	const handleAdminCheck = async () => {
 		// console.log(account);
-		console.log(user);
+		// console.log(user);
 		const isAdmin = await contract.adminEmail();
-		console.log(isAdmin);
+		// console.log(isAdmin);
 		setIsAdminLogin(user?.email == isAdmin);
+		if (user?.email == isAdmin) {
+			handleModelClose(true);
+		}
 	};
 
 	useEffect(() => {
@@ -95,9 +104,17 @@ const MetaConnect = () => {
 		try {
 			// await	contract.addStudentAddress(account, "2@gmail.com")
 			// console.log("mint function called");
-			contract.batchMint().catch(() => {
-				alert("minted");
-			});
+			await contract
+				.batchMint()
+				.then(() => {
+					alert("SuccessFull");
+				})
+				.catch((e) => {
+					console.log(e);
+					console.log("erroe");
+
+					alert("Not able minted");
+				});
 		} catch (error) {
 			console.log(error);
 		}
@@ -105,9 +122,10 @@ const MetaConnect = () => {
 
 	const updateStudentAddress = async () => {
 		try {
-			console.log(await contract.adminAddress());
+			// console.log(await contract.adminAddress());
 			const result = await contract.addStudentAddress(address, user?.email);
-			console.log(result);
+			setStaticAddress(address);
+			// console.log(result);
 		} catch (error) {
 			console.log(error);
 		}
@@ -115,57 +133,23 @@ const MetaConnect = () => {
 
 	return (
 		<div className="App z-10">
-			{connected ? (
-				<div>
+			<>
+				{!isModelClosed && <Modal handleModelClose={handleModelClose} />}
+				{studentDetails.length <= 0 ? (
 					<>
-						{/* {chainId && `Connected chain: ${chainId}`}
-						<p></p>
-						{account && `Connected account: ${account}`} */}
-						{studentDetails.length ? (
-							studentDetails.map((item, i) => {
-								return (
-									<div>
-										<span>{item}</span>
-									</div>
-								);
-							})
-						) : (
+						{!isAdminLogin && (
 							<Input
 								contract={contract}
 								account={account}
 								user={user}
+								setStaticAddress={setStaticAddress}
 								setAddress={handleInputchange}
 								updateStudentAddress={updateStudentAddress}
 								handleModelClose={handleModelClose}
 								address={address}
 							/>
 						)}
-						<div
-							className="flex justify-center items-center bg-blue-600 px-8 py-4 rounded-md btn border-none mt-8"
-							onClick={studentDetails.length > 0 ? mint : getStudentDetails}>
-							<span className="text-white">
-								{studentDetails.length > 0 ? "Mint" : "Get Student Details"}
-							</span>
-						</div>
-					</>
-				</div>
-			) : (
-				<>
-					{!isModelClosed && <Modal handleModelClose={handleModelClose} />}
-					{studentDetails.length <= 0 ? (
-						<>
-							{!isAdminLogin && (
-								<Input
-									contract={contract}
-									account={account}
-									user={user}
-									setAddress={handleInputchange}
-									updateStudentAddress={updateStudentAddress}
-									handleModelClose={handleModelClose}
-									address={address}
-								/>
-							)}
-							{/* {!	address ? (
+						{/* {!	address ? (
 								<div
 									className="flex justify-center items-center bg-blue-600 px-8 py-4 rounded-md btn border-none mt-8 z-50"
 									onClick={getStudentDetails}>
@@ -178,26 +162,54 @@ const MetaConnect = () => {
 									<span className="text-white">Update Address</span>
 								</div>
 							)} */}
-							<div
-								className="flex justify-center items-center bg-blue-600 px-8 py-4 rounded-md btn border-none mt-8 z-50"
-								onClick={isAdminLogin ? mint : updateStudentAddress}>
-								<span className="text-white">
-									{isAdminLogin ? "Mint" : "Add Address"}
-								</span>
+						{isAdminLogin && (
+							<div>
+								{walletAddress ? (
+									<span class="inline-flex items-center font-bold gap-x-1.5 py-1.5 px-3 rounded-full   border border-gray-800 text-gray-800 dark:text-white  dark:border-white dark:text-gray">
+										{walletAddress}
+									</span>
+								) : (
+									// <span class="bg-gray-100 text-gray-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
+									// 	{}
+									// </span>
+
+									<div
+										className="flex justify-center items-center bg-blue-600 px-8 py-4 rounded-md btn border-none mt-8 z-50"
+										onClick={() => connect()}>
+										Connect wallet
+									</div>
+								)}
 							</div>
-						</>
-					) : (
-						<div>
-							<UserCard studentDetails={studentDetails} />
-							<div className="mt-4">
-								<small className="text-red-500">
-									*If you need to change Detail please contact to Admin
-								</small>
-							</div>
+						)}
+						<div
+							className="flex justify-center items-center bg-blue-600 px-8 py-4 rounded-md btn border-none mt-8 z-50"
+							onClick={
+								isAdminLogin
+									? mint
+									: emptyAddress
+									? getStudentDetails
+									: updateStudentAddress
+							}>
+							<span className="text-white">
+								{isAdminLogin ? (
+									"Mint"
+								) : (
+									<>{emptyAddress ? "Get Student Detailss" : "Add Address"}</>
+								)}
+							</span>
 						</div>
-					)}
-				</>
-			)}
+					</>
+				) : (
+					<div>
+						<UserCard studentDetails={studentDetails} />
+						<div className="mt-4">
+							<small className="text-red-500">
+								*If you need to change Detail please contact to Admin
+							</small>
+						</div>
+					</div>
+				)}
+			</>
 		</div>
 	);
 };
