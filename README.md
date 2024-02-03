@@ -1,4 +1,4 @@
-**[Live Site](https://sparkly-faun-19993f.netlify.app/login)**
+**[Live Site](https://certifynft.netlify.app)**
 
 **Login**
 ![](src/readmeImg/logIn.png)
